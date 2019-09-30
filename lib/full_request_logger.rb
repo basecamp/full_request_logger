@@ -8,4 +8,5 @@ module FullRequestLogger
   mattr_accessor :ttl
   mattr_accessor :redis
   mattr_accessor :enabled
+  mattr_accessor :credentials
 end

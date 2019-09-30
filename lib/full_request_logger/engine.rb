@@ -14,9 +14,10 @@ module FullRequestLogger
 
     initializer "full_request_logger.configs" do
       config.after_initialize do |app|
-        FullRequestLogger.enabled = app.config.full_request_logger.enabled || false
-        FullRequestLogger.ttl     = app.config.full_request_logger.ttl   || 10.minutes
-        FullRequestLogger.redis   = app.config.full_request_logger.redis || {}
+        FullRequestLogger.enabled     = app.config.full_request_logger.enabled || false
+        FullRequestLogger.ttl         = app.config.full_request_logger.ttl   || 10.minutes
+        FullRequestLogger.redis       = app.config.full_request_logger.redis || {}
+        FullRequestLogger.credentials = app.config.full_request_logger.credentials
       end
     end
 
