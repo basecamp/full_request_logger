@@ -59,7 +59,7 @@ class FullRequestLogger::Recorder
     end
 
     def request_key(id)
-      "request_log/#{id}"
+      "full_request_logger/requests/#{id}"
     end
 
     def compress(text)
