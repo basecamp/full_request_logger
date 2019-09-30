@@ -6,7 +6,9 @@ module FullRequestLogger
 
     def call(env)
       @app.call(env).tap do
-        Recorder.instance.flush ActionDispatch::Request.new(env).request_id
+        if FullRequestLogger.enabled
+          Recorder.instance.flush ActionDispatch::Request.new(env).request_id
+        end
       end
     end
   end

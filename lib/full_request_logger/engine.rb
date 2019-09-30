@@ -14,14 +14,17 @@ module FullRequestLogger
 
     initializer "full_request_logger.configs" do
       config.after_initialize do |app|
-        FullRequestLogger.ttl   = app.config.full_request_logger.ttl   || 10.minutes
-        FullRequestLogger.redis = app.config.full_request_logger.redis || {}
+        FullRequestLogger.enabled = app.config.full_request_logger.enabled || false
+        FullRequestLogger.ttl     = app.config.full_request_logger.ttl   || 10.minutes
+        FullRequestLogger.redis   = app.config.full_request_logger.redis || {}
       end
     end
 
     initializer "full_request_logger.recoder_attachment" do
-      config.after_initialize do
-        FullRequestLogger::Recorder.instance.attach_to Rails.logger
+      config.after_initialize do |app|
+        if app.config.full_request_logger.enabled
+          FullRequestLogger::Recorder.instance.attach_to Rails.logger
+        end
       end
     end
   end
