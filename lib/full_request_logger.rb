@@ -5,5 +5,6 @@ module FullRequestLogger
 
   autoload :Recorder
 
-  mattr_accessor :ttl, default: 10.minutes
+  mattr_accessor :ttl
+  mattr_accessor :redis
 end

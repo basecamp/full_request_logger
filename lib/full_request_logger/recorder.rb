@@ -3,8 +3,6 @@
 require "zlib"
 
 class FullRequestLogger::Recorder
-  REQUEST_TTL = 10.minutes
-
   attr_reader :redis
 
   def self.instance
@@ -12,7 +10,7 @@ class FullRequestLogger::Recorder
   end
 
   def initialize
-    @redis = Redis.new Rails.application.config_for("redis/shared")
+    @redis = Redis.new FullRequestLogger.redis
   end
 
   def attach_to(logger)
@@ -31,7 +29,10 @@ class FullRequestLogger::Recorder
 
   def flush(request_id)
     if (log_to_be_flushed = log).present?
-      redis.setex request_key(request_id), REQUEST_TTL, compress(log_to_be_flushed)
+      redis.setex \
+        request_key(request_id),
+        FullRequestLogger.ttl,
+        compress(log_to_be_flushed)
     end
   ensure
     messages.clear

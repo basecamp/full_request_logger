@@ -7,10 +7,16 @@ module FullRequestLogger
     config.eager_load_namespaces << FullRequestLogger
 
     config.full_request_logger = ActiveSupport::OrderedOptions.new
-    config.full_request_logger.redis = {}
 
     initializer "full_request_logger.middleware" do
       config.app_middleware.insert_after ::ActionDispatch::RequestId, FullRequestLogger::Middleware
+    end
+
+    initializer "full_request_logger.configs" do
+      config.after_initialize do |app|
+        FullRequestLogger.ttl   = app.config.full_request_logger.ttl   || 10.minutes
+        FullRequestLogger.redis = app.config.full_request_logger.redis || {}
+      end
     end
 
     initializer "full_request_logger.recoder_attachment" do
