@@ -12,6 +12,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'activesupport', '>= 6.0.0'
 
   s.add_development_dependency 'bundler', '~> 1.17'
+  # redis?
 
   s.files      = `git ls-files`.split("\n")
   s.test_files = `git ls-files -- test/*`.split("\n")
