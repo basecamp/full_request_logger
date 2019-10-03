@@ -1,3 +1,4 @@
+require 'rails' # possible to require less code?
 require "rails/engine"
 require "full_request_logger/middleware"
 
