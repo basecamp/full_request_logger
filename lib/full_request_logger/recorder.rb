@@ -39,7 +39,7 @@ class FullRequestLogger::Recorder
   end
 
   def retrieve(request_id)
-    if log = redis.get(request_key(request_id))
+    if log = retrieve_from_redis(request_id)
       uncompress(log).force_encoding("utf-8")
     end
   end
@@ -56,6 +56,10 @@ class FullRequestLogger::Recorder
 
     def remove_ansi_colors(message)
       message.remove(/\e\[\d+m/)
+    end
+
+    def retrieve_from_redis(request_id)
+      redis.get(request_key(request_id))
     end
 
     def request_key(id)
