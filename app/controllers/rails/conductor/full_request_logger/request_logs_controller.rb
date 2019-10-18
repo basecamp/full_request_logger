@@ -1,8 +1,6 @@
 module Rails
   class Conductor::FullRequestLogger::RequestLogsController < ActionController::Base
-    if credentials = FullRequestLogger.credentials
-      http_basic_authenticate_with credentials
-    end
+    before_action :authenticate
 
     layout "rails/conductor"
 
@@ -16,5 +14,12 @@ module Rails
         head :not_found
       end
     end
+
+    private
+      def authenticate
+        if credentials = FullRequestLogger.credentials
+          http_basic_authenticate_or_request_with credentials
+        end
+      end
   end
 end
