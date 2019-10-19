@@ -4,6 +4,13 @@ module Rails
 
     layout "rails/conductor"
 
+    def index
+    end
+
+    def create
+      redirect_to rails_conductor_request_log_url(params[:id])
+    end
+
     def show
       if @logs = FullRequestLogger::Recorder.instance.retrieve(params[:id])
         respond_to do |format|
