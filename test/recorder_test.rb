@@ -25,4 +25,8 @@ class RecorderTest < ActiveSupport::TestCase
 
     assert_equal "This is an extra line\nThis is another line\nThis is yet another line", @full_request_logger.retrieve("123")
   end
+
+  test "retrieve missing request" do
+    assert_nil @full_request_logger.retrieve("not-there")
+  end
 end
