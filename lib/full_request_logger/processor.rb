@@ -34,6 +34,7 @@ class FullRequestLogger::Processor
     end
 
     delegate :request_id, to: :request
+
     def request
       @request ||= ActionDispatch::Request.new(@env)
     end
