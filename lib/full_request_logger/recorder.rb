@@ -4,14 +4,8 @@ require "redis"
 require "zlib"
 
 class FullRequestLogger::Recorder
-  attr_reader :redis
-
   def self.instance
     @instance ||= new
-  end
-
-  def initialize
-    @redis = Redis.new FullRequestLogger.redis
   end
 
   # Extends an existing logger instance with a broadcast aspect that'll send a copy of all logging lines to this recorder.
@@ -61,6 +55,10 @@ class FullRequestLogger::Recorder
   end
 
   private
+    def redis
+      @redis ||= Redis.new FullRequestLogger.redis
+    end
+
     def messages
       Thread.current[:full_request_logger_messages] ||= []
     end
