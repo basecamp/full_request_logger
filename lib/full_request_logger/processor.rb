@@ -1,4 +1,5 @@
-# frozen_string_literal: true
+require "full_request_logger/recorder"
+require "action_dispatch/http/request"
 
 class FullRequestLogger::Processor
   def initialize(env)
@@ -6,7 +7,7 @@ class FullRequestLogger::Processor
   end
 
   def process
-    if eligible_for_storage?
+    if enabled? && eligible_for_storage?
       store request_id
     else
       clear
@@ -14,8 +15,16 @@ class FullRequestLogger::Processor
   end
 
   private
+    def enabled?
+      FullRequestLogger.enabled
+    end
+
     def eligible_for_storage?
-      true
+      if FullRequestLogger.eligibility.respond_to?(:call)
+        FullRequestLogger.eligibility.call(request)
+      else
+        FullRequestLogger.eligibility
+      end
     end
 
     delegate :store, :clear, to: :recorder
@@ -25,6 +34,6 @@ class FullRequestLogger::Processor
 
     delegate :request_id, to: :request
     def request
-      @request ||= ActionDispatch::Request.new(env)
+      @request ||= ActionDispatch::Request.new(@env)
     end
 end
