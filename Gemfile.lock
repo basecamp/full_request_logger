@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    full_request_logger (0.1)
+    full_request_logger (0.3)
       rails (>= 6.0.0)
       redis (>= 4.0)
 
