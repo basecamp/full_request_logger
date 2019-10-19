@@ -35,4 +35,30 @@ class ProcessorTest < ActiveSupport::TestCase
       FullRequestLogger.enabled = true
     end
   end
+
+  test "successful eligibility will store request" do
+    begin
+      FullRequestLogger.eligibility = ->(request) { request.request_id == "123" }
+
+      LOGGER.info "hello!"
+      @processor.process
+      assert FRL.combined_log.blank?
+      assert_equal "hello!", FRL.retrieve("123")
+    ensure
+      FullRequestLogger.eligibility = true
+    end
+  end
+
+  test "failing eligibility will not store request" do
+    begin
+      FullRequestLogger.eligibility = ->(request) { request.request_id == "678" }
+
+      LOGGER.info "hello!"
+      @processor.process
+      assert FRL.combined_log.blank?
+      assert_nil FRL.retrieve("123")
+    ensure
+      FullRequestLogger.eligibility = true
+    end
+  end
 end
