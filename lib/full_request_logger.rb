@@ -4,6 +4,7 @@ module FullRequestLogger
   extend ActiveSupport::Autoload
 
   autoload :Recorder
+  autoload :Processor
 
   mattr_accessor :ttl
   mattr_accessor :redis

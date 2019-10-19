@@ -5,11 +5,7 @@ module FullRequestLogger
     end
 
     def call(env)
-      @app.call(env).tap do
-        if FullRequestLogger.enabled
-          Recorder.instance.store ActionDispatch::Request.new(env).request_id
-        end
-      end
+      @app.call(env).tap { Processor.process(env) }
     end
   end
 end
