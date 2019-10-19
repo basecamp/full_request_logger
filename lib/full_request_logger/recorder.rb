@@ -32,7 +32,7 @@ class FullRequestLogger::Recorder
         compress(log_to_be_stored)
     end
   ensure
-    messages.clear
+    clear
   end
 
   # Returns a single string with all the log messages that were captured for the given +request_id+ (or nil if nothing was
@@ -43,9 +43,14 @@ class FullRequestLogger::Recorder
     end
   end
 
-  # Clear out any messages pending in the buffer as well as all existing stored request logs.
-  def reset
+  # Clears the current buffer of log messages.
+  def clear
     messages.clear
+  end
+
+  # Clear out any messages pending in the buffer as well as all existing stored request logs.
+  def clear_all
+    clear
     clear_stored_requests
   end
 

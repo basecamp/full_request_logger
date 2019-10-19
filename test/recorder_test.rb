@@ -9,7 +9,7 @@ class RecorderTest < ActiveSupport::TestCase
     @full_request_logger = FullRequestLogger::Recorder.new.tap { |frl| frl.attach_to(@logger) }
   end
 
-  teardown { @full_request_logger.reset }
+  teardown { @full_request_logger.clear_all }
 
   test "attached frl will store writes made to logger" do
     @logger.info "This is a line"
