@@ -8,9 +8,9 @@ class FullRequestLogger::Processor
 
   def process
     if enabled? && eligible_for_storage?
-      store request_id
+      recorder.store request_id
     else
-      clear
+      recorder.clear
     end
   end
 
@@ -20,14 +20,15 @@ class FullRequestLogger::Processor
     end
 
     def eligible_for_storage?
-      if FullRequestLogger.eligibility.respond_to?(:call)
-        FullRequestLogger.eligibility.call(request)
+      if eligibility.respond_to?(:call)
+        eligibility.call(request)
       else
-        FullRequestLogger.eligibility
+        eligibility
       end
     end
 
-    delegate :store, :clear, to: :recorder
+    delegate :eligibility, to: FullRequestLogger
+
     def recorder
       @recorder ||= FullRequestLogger::Recorder.instance
     end
