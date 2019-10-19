@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name     = 'full_request_logger'
-  s.version  = '0.1'
+  s.version  = '0.2'
   s.authors  = 'David Heinemeier Hansson'
   s.email    = 'david@basecamp.com'
   s.summary  = 'Make full request logs accessible via web UI'
