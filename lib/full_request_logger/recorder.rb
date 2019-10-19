@@ -15,9 +15,7 @@ class FullRequestLogger::Recorder
   end
 
   def attach_to(logger)
-    logger.extend ActiveSupport::Logger.broadcast(
-      ActiveSupport::Logger.new(self)
-    )
+    logger.extend ActiveSupport::Logger.broadcast(ActiveSupport::Logger.new(self))
   end
 
   def write(message)
