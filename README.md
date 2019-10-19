@@ -27,6 +27,14 @@ config.full_request_logger.ttl     = 1.hour
 config.full_request_logger.redis   = { host: "127.0.0.1", port: 36379, timeout: 1 }
 ```
 
+You can restrict which requests will be stored by setting an eligibility function that gets to evaluate the request:
+
+```ruby
+config.full_request_logger.eligibility = ->(request) { request.params[:full_request_log] == "1" }
+```
+
+This makes it easier to use the logger on a busy site that would otherwise result in a lot of needless redis writes.
+
 The request logs access can be protected behind http basic by adding the following credentials
 (using `./bin/rails credentials:edit --environment production`):
 
