@@ -14,18 +14,22 @@ class FullRequestLogger::Recorder
     @redis = Redis.new FullRequestLogger.redis
   end
 
+  # Extends an existing logger instance with a broadcast aspect that'll send a copy of all logging lines to this recorder.
   def attach_to(logger)
     logger.extend ActiveSupport::Logger.broadcast(ActiveSupport::Logger.new(self))
   end
 
+  # Writes a log message to a buffer that'll be flushed when the request is over.
   def write(message)
     messages << remove_ansi_colors(message)
   end
 
+  # Return a single string with all the log messages that have been buffered so far.
   def combined_log
     messages.join.strip
   end
 
+  # Flush all log messages as a single string to the full request logging storage accessible under the +request_id+.
   def flush(request_id)
     if (log_to_be_flushed = combined_log).present?
       redis.setex \
@@ -37,12 +41,15 @@ class FullRequestLogger::Recorder
     messages.clear
   end
 
+  # Returns a single string with all the log messages that were captured for the given +request_id+ (or nil if nothing was
+  # recorded or it has since expired).
   def retrieve(request_id)
     if log = redis.get(request_key(request_id))
       uncompress(log).force_encoding("utf-8")
     end
   end
 
+  # Clear out any messages pending to be flushed as well as all existing flushed request logs.
   def reset
     messages.clear
     clear_flushed_requests

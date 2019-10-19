@@ -2,7 +2,7 @@
 
 Easy access to full request logs via a web UI. The recorder attaches to the existing Rails.logger instance, 
 and captures a copy of each log line into a per-thread buffer. When the request is over, the middleware makes
-the recorder flush all the log lines that were recorded for that request as a compressed batch to an expiring Redis key.
+the recorder flush all the log lines that were recorded for that request as a compressed batch to an auto-expiring Redis key.
 
 Thus you no longer have to grep through log files or wrestle with logging pipelines to instantly see all the
 log lines relevant to a request you just made. This is ideal for when you're testing a feature in the wild with
