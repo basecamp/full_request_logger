@@ -45,6 +45,11 @@ class FullRequestLogger::Recorder
     end
   end
 
+  def reset
+    messages.clear
+    clear_flushed_requests
+  end
+
   # no-op needed for Logger to treat this as a valid log device
   def close
     redis.disconnect!
@@ -61,6 +66,12 @@ class FullRequestLogger::Recorder
 
     def request_key(id)
       "full_request_logger/requests/#{id}"
+    end
+
+    def clear_flushed_requests
+      if (request_keys = redis.keys(request_key("*"))).any?
+        redis.del request_keys
+      end
     end
 
     def compress(text)
