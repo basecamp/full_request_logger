@@ -46,7 +46,7 @@ full_request_logger:
 
 ## Usage
 
-Access request logs via `/rails/conductor/full_request_logger/request_logs/:id` where id is the X-Request-Id.
+Access request logs via `/rails/conductor/full_request_logger/request_logs`.
 
 ## License
 
