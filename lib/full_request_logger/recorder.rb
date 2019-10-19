@@ -19,7 +19,7 @@ class FullRequestLogger::Recorder
     logger.extend ActiveSupport::Logger.broadcast(ActiveSupport::Logger.new(self))
   end
 
-  # Writes a log message to a buffer that'll be flushed when the request is over.
+  # Writes a log message to a buffer that'll be stored when the request is over.
   def write(message)
     messages << remove_ansi_colors(message)
   end
@@ -29,13 +29,13 @@ class FullRequestLogger::Recorder
     messages.join.strip
   end
 
-  # Flush all log messages as a single string to the full request logging storage accessible under the +request_id+.
-  def flush(request_id)
-    if (log_to_be_flushed = combined_log).present?
+  # Store all log messages as a single string to the full request logging storage accessible under the +request_id+.
+  def store(request_id)
+    if (log_to_be_stored = combined_log).present?
       redis.setex \
         request_key(request_id),
         FullRequestLogger.ttl,
-        compress(log_to_be_flushed)
+        compress(log_to_be_stored)
     end
   ensure
     messages.clear
@@ -49,10 +49,10 @@ class FullRequestLogger::Recorder
     end
   end
 
-  # Clear out any messages pending to be flushed as well as all existing flushed request logs.
+  # Clear out any messages pending in the buffer as well as all existing stored request logs.
   def reset
     messages.clear
-    clear_flushed_requests
+    clear_stored_requests
   end
 
   # no-op needed for Logger to treat this as a valid log device
@@ -73,7 +73,7 @@ class FullRequestLogger::Recorder
       "full_request_logger/requests/#{id}"
     end
 
-    def clear_flushed_requests
+    def clear_stored_requests
       if (request_keys = redis.keys(request_key("*"))).any?
         redis.del request_keys
       end

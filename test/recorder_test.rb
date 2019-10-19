@@ -16,12 +16,12 @@ class RecorderTest < ActiveSupport::TestCase
     assert @full_request_logger.combined_log.include?("This is a line")
   end
 
-  test "flush combined log to single request log" do
+  test "store combined log in single request log" do
     @logger.info "This is an extra line"
     @logger.info "This is another line"
     @logger.info "This is yet another line"
 
-    @full_request_logger.flush("123")
+    @full_request_logger.store("123")
 
     assert_equal "This is an extra line\nThis is another line\nThis is yet another line", @full_request_logger.retrieve("123")
   end
