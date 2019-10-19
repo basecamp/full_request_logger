@@ -23,12 +23,12 @@ class FullRequestLogger::Recorder
     messages << remove_ansi_colors(message)
   end
 
-  def log
+  def combined_log
     messages.join.strip
   end
 
   def flush(request_id)
-    if (log_to_be_flushed = log).present?
+    if (log_to_be_flushed = combined_log).present?
       redis.setex \
         request_key(request_id),
         FullRequestLogger.ttl,
