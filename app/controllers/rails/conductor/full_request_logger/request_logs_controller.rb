@@ -18,7 +18,7 @@ module Rails
           format.text { send_data @logs, disposition: :attachment, filename: "#{params[:id]}.log" }
         end
       else
-        head :not_found
+        redirect_to rails_conductor_request_logs_url, alert: "Request not found!"
       end
     end
 
