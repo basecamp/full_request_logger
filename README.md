@@ -1,6 +1,6 @@
 # Full Request Logger
 
-Easy access to full request logs via a web UI. The recorder attaches to the existing Rails.logger instance, 
+Easy access to full request logs via a web UI. The recorder attaches to the existing Rails.logger instance,
 and captures a copy of each log line into a per-thread buffer. When the request is over, the middleware makes
 the recorder store all the log lines that were recorded for that request as a compressed batch to an auto-expiring Redis key.
 
@@ -24,7 +24,7 @@ is the enabled setting.
 ```ruby
 config.full_request_logger.enabled = true
 config.full_request_logger.ttl     = 1.hour
-config.full_request_logger.redis   = { host: "127.0.0.1", port: 36379, timeout: 1 }
+config.full_request_logger.redis   = { host: "127.0.0.1", port: 6379, timeout: 1 }
 ```
 
 You can restrict which requests will be stored by setting an eligibility function that gets to evaluate the request:
