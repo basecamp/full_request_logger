@@ -17,7 +17,7 @@ gem 'full_request_logger'
 
 ## Configuration
 
-Add to development.rb and/or production.rb. Default time-to-live (TTL) for reach recorded request is 10 minutes,
+Add to development.rb and/or production.rb. Default time-to-live (TTL) for each recorded request is 10 minutes,
 and the default Redis storage is assumed to live on localhost, but both can be overwritten. Only configuration needed
 is the enabled setting.
 
