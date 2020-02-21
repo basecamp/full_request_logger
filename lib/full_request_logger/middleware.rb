@@ -5,7 +5,7 @@ module FullRequestLogger
     end
 
     def call(env)
-      @app.call(env).tap { Processor.new(ActionDispatch::Request.new(@env)).process }
+      @app.call(env).tap { Processor.new(ActionDispatch::Request.new(env)).process }
     end
   end
 end
