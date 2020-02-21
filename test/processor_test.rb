@@ -11,7 +11,7 @@ class ProcessorTest < ActiveSupport::TestCase
   FRL    = FullRequestLogger::Recorder.instance.tap { |frl| frl.attach_to(LOGGER) }
 
   setup do
-    @processor = FullRequestLogger::Processor.new({ "action_dispatch.request_id" => "123" })
+    @processor = FullRequestLogger::Processor.new(ActionDispatch::Request.new({ "action_dispatch.request_id" => "123" }))
   end
 
   teardown { FRL.clear_all }

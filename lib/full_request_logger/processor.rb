@@ -1,9 +1,8 @@
 require "full_request_logger/recorder"
-require "action_dispatch/http/request"
 
 class FullRequestLogger::Processor
-  def initialize(env)
-    @env = env
+  def initialize(request)
+    @request = request
   end
 
   def process
@@ -15,6 +14,9 @@ class FullRequestLogger::Processor
   end
 
   private
+    attr_reader :request
+    delegate :request_id, to: :request
+
     def enabled?
       FullRequestLogger.enabled
     end
@@ -31,11 +33,5 @@ class FullRequestLogger::Processor
 
     def recorder
       @recorder ||= FullRequestLogger::Recorder.instance
-    end
-
-    delegate :request_id, to: :request
-
-    def request
-      @request ||= ActionDispatch::Request.new(@env)
     end
 end
