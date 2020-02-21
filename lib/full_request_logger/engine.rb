@@ -1,5 +1,6 @@
 require "rails/engine"
 require "full_request_logger/middleware"
+require "full_request_logger/job"
 
 module FullRequestLogger
   class Engine < Rails::Engine
@@ -10,6 +11,12 @@ module FullRequestLogger
 
     initializer "full_request_logger.middleware" do
       config.app_middleware.insert_after ::ActionDispatch::RequestId, FullRequestLogger::Middleware
+    end
+
+    initializer "full_request_logger.job" do
+      ActiveSupport.on_load(:active_job) do
+        include FullRequestLogger::Job
+      end
     end
 
     initializer "full_request_logger.configs" do
