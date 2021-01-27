@@ -43,6 +43,7 @@ class FullRequestLogger::Recorder
     end
   end
 
+  # Returns the list of logs with request_id to show at index, supports for basic next page and search
   def retrive_list(cursor: 0, per_page: 50, query: nil)
     paginated_result = redis.scan(cursor, match: 'full_request_logger/requests/*', count: per_page)
 
