@@ -24,9 +24,13 @@ module Rails
     end
 
     private
+
       def authenticate
         if credentials = FullRequestLogger.credentials
-          http_basic_authenticate_or_request_with credentials
+          authenticate_or_request_with_http_basic do |given_name, given_password|
+            ActiveSupport::SecurityUtils.secure_compare(given_name, credentials[:name]) &
+              ActiveSupport::SecurityUtils.secure_compare(given_password, credentials[:password])
+          end
         end
       end
   end
