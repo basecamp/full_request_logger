@@ -43,6 +43,28 @@ class FullRequestLogger::Recorder
     end
   end
 
+  def retrive_list(cursor: 0, per_page: 50, query: nil)
+    paginated_result = redis.scan(cursor, match: 'full_request_logger/requests/*', count: per_page)
+
+    http_truncated_log_list = OpenStruct.new(next_cursor: paginated_result[0],
+                                             current_cursor: cursor,
+                                             entries: [])
+
+    http_truncated_log_list.entries = paginated_result[1].map do |key|
+      key = key.gsub('full_request_logger/requests/', '')
+      body = retrieve(key)
+
+      if query.blank? || (query.present? && body.include?(query))
+        OpenStruct.new(
+          request_id: key,
+          body: body.to_s.truncate(100)
+        )
+      end
+    end.compact
+
+    http_truncated_log_list
+  end
+
   # Clears the current buffer of log messages.
   def clear
     messages.clear

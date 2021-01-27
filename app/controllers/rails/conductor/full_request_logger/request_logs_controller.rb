@@ -5,6 +5,7 @@ module Rails
     layout "rails/conductor"
 
     def index
+      @logs = FullRequestLogger::Recorder.instance.retrive_list(cursor: params[:cursor] || 0, query: params[:query])
     end
 
     def create

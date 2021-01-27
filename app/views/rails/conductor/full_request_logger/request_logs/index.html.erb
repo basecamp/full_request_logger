@@ -1,9 +1,51 @@
 <h1>Lookup a request log</h1>
 
 <% if alert = flash[:alert] %><p style="color: red"><%= alert %></p><% end %>
+<div class='fiters' style="display: flex;margin-bottom: 20px;align-items: center;justify-content: center;">
+  <div class="left" style="max-width: 50%;margin-right: 50px;">
+    <%= form_with url: rails_conductor_request_logs_path do |form| %>
+      <p>Copy the X-Request-Id header and paste it in:</p>
+      <%= form.text_field :id, size: 40, placeholder: "0540689b-1ec6-4b92-ae8e-1c55bf7c3b79" %>
+      <%= form.submit "Retrieve" %>
+    <% end %>
+  </div>
+  <div class='right' style="max-width: 50%;">
+    <%= form_with url: rails_conductor_request_logs_path, method: 'GET' do |form| %>
+      <p>Search by log text: </p>
+      <%= form.search_field :query, size: 40, placeholder: "Log text to search", autofocus: true, value: params[:query] %>
+      <%= form.submit "Filter" %>
+    <% end %>
+  </div>
+</div>
 
-<%= form_with url: rails_conductor_request_logs_path do |form| %>
-  <p>Copy the X-Request-Id header and paste it in:</p>
-  <%= form.text_field :id, size: 40, placeholder: "0540689b-1ec6-4b92-ae8e-1c55bf7c3b79", autofocus: true %>
-  <%= form.submit "Retrieve" %>
+<% if @logs.entries.any? %>
+  <table>
+    <thead>
+      <tr>
+        <td>Request Id</td>
+        <td>Truncated Log</td>
+        <td></td>
+      </tr>
+    </thead>
+    <tbody>
+      <% @logs.entries.each do |log| %>
+        <tr>
+          <td><%= log.request_id %></td>
+          <td>
+            <pre style="background: black; color: white; padding: 10px; overscroll: auto;"><%= log.body %></pre>
+          </td>
+          <td>
+            <%= link_to "View Detail", rails_conductor_request_log_path(log.request_id) %> &nbsp;
+            <%= link_to "Download", rails_conductor_request_log_path(log.request_id, format: :text) %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <div style="text-align: center;">
+    <%= link_to '<< Start', rails_conductor_request_logs_path(cursor: 0) %>&nbsp;
+    <%= link_to 'Next >>', rails_conductor_request_logs_path(cursor: @logs.next_cursor), style: "#{'pointer-events: none;' if @logs.next_cursor.to_s == '0'}"  %>
+  </div>
+<% else %>
+  <p>No Logs found</p>
 <% end %>
