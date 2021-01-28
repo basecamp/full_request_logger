@@ -44,7 +44,7 @@ class FullRequestLogger::Recorder
   end
 
   # Returns the list of logs with request_id to show at index, supports for basic next page and search
-  def retrive_list(page: 1, per_page: 2, query: nil)
+  def retrive_list(page: 1, per_page: 50, query: nil)
     start_index = (page.to_i - 1) * per_page
     stop_index = page.to_i * per_page - 1
 
