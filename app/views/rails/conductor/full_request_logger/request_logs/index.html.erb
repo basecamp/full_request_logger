@@ -42,10 +42,29 @@
       <% end %>
     </tbody>
   </table>
-  <div style="text-align: center;">
-    <%= link_to '<< Start', rails_conductor_request_logs_path(cursor: 0) %>&nbsp;
-    <%= link_to 'Next >>', rails_conductor_request_logs_path(cursor: @logs.next_cursor), style: "#{'pointer-events: none;' if @logs.next_cursor.to_s == '0'}"  %>
+
+  <div class="pagination">
+    <%= will_paginate @logs %>
   </div>
 <% else %>
   <p>No Logs found</p>
 <% end %>
+
+<style>
+  .pagination {
+     text-align: center;
+     margin: 0;
+     padding: 0;
+     margin: 0 0 10px;
+  }
+  .pagination li {
+     display: inline-block;
+     list-style: none;
+     padding: 10px 15px;
+     cursor: pointer;
+  }
+  .pagination li.active {
+     background: #003580;
+     color: white;
+  }
+</style>

@@ -44,26 +44,35 @@ class FullRequestLogger::Recorder
   end
 
   # Returns the list of logs with request_id to show at index, supports for basic next page and search
-  def retrive_list(cursor: 0, per_page: 50, query: nil)
-    paginated_result = redis.scan(cursor, match: 'full_request_logger/requests/*', count: per_page)
+  def retrive_list(page: 1, per_page: 2, query: nil)
+    start_index = (page.to_i - 1) * per_page
+    stop_index = page.to_i * per_page - 1
 
-    http_truncated_log_list = OpenStruct.new(next_cursor: paginated_result[0],
-                                             current_cursor: cursor,
-                                             entries: [])
+    index = 0
+    http_truncated_log_list = []
+    # There is not other way to get count of filtered keys in redis
+    total_count = 0
+    redis.scan_each(match: 'full_request_logger/requests/*') do |key|
+      total_count += 1
 
-    http_truncated_log_list.entries = paginated_result[1].map do |key|
-      key = key.gsub('full_request_logger/requests/', '')
-      body = retrieve(key)
+      if index.between?(start_index, stop_index)
+        key = key.gsub('full_request_logger/requests/', '')
+        body = retrieve(key)
 
-      if query.blank? || (query.present? && body.include?(query))
-        OpenStruct.new(
-          request_id: key,
-          body: body.to_s.truncate(100)
-        )
+        if query.blank? || (query.present? && body.include?(query))
+          http_truncated_log_list << OpenStruct.new(
+            request_id: key,
+            body: body.to_s.truncate(100)
+          )
+        end
       end
-    end.compact
 
-    http_truncated_log_list
+      index += 1
+    end
+
+    WillPaginate::Collection.create(page.to_i, per_page, total_count) do |pager|
+      pager.replace(http_truncated_log_list.to_a)
+    end
   end
 
   # Clears the current buffer of log messages.
