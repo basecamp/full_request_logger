@@ -22,9 +22,11 @@ and the default Redis storage is assumed to live on localhost, but both can be o
 is the enabled setting.
 
 ```ruby
-config.full_request_logger.enabled = true
-config.full_request_logger.ttl     = 1.hour
-config.full_request_logger.redis   = { host: "127.0.0.1", port: 6379, timeout: 1 }
+config.full_request_logger.enabled        = true
+config.full_request_logger.ttl            = 1.hour
+config.full_request_logger.redis          = { host: "127.0.0.1", port: 6379, timeout: 1 }
+config.full_request_logger.data_adapter   = :redis # Default is redis
+
 ```
 
 You can restrict which requests will be stored by setting an eligibility function that gets to evaluate the request:
