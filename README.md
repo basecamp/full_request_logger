@@ -24,14 +24,14 @@ is the enabled setting.
 ```ruby
 config.full_request_logger.enabled        = true
 config.full_request_logger.ttl            = 1.hour
-config.full_request_logger.data_adapter   = :redis # Default is redis
+config.full_request_logger.data_adapter   = :redis # Default is redis (Possible values :redis or :elasticsearch)
 
 ```
 
 ## Supported Data adapters
 
-* :redis (will pick ES url from REDIS_URL environment variable)
-* :elasticsearch (will pick ES url from ELASTICSEARCH_URL environment variable)
+* `redis` (will pick ES url from REDIS_URL environment variable)
+* `elasticsearch` (will pick ES url from ELASTICSEARCH_URL environment variable)
 
 You can restrict which requests will be stored by setting an eligibility function that gets to evaluate the request:
 

@@ -39,13 +39,18 @@ module FullRequestLogger::DataAdapters
 
     def repository
       @repository ||= FullRequestLoggerRepository.new(
-        client: Elasticsearch::Client.new(url: ENV.fetch('ELASTICSEARCH_URL', 'http://localhost:9200')),
-        index_name: :full_request_logger,
-        document_type: 'log',
-        klass: FullRequestLog
+        client: Elasticsearch::Client.new(url: ENV.fetch('ELASTICSEARCH_URL', 'http://localhost:9200'))
       )
     end
 
-    class FullRequestLoggerRepository; include Elasticsearch::Persistence::Repository end
+    # Need to find a solution to use ttl, one approach is use job and clear at given time
+    class FullRequestLoggerRepository
+      include Elasticsearch::Persistence::Repository
+      include Elasticsearch::Persistence::Repository::DSL
+
+      index_name 'full_request_logger'
+      klass FullRequestLogger::DataAdapters::ElastisearchAdapter::FullRequestLog
+      document_type 'log'
+    end
   end
 end

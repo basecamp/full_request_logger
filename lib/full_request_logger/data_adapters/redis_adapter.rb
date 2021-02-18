@@ -59,7 +59,13 @@ module FullRequestLogger::DataAdapters
     private
 
     def redis
-      @redis ||= Redis.new(ENV.fetch('REDIS_URL', 'redis://localhost:6379/'))
+      uri = URI.parse(ENV.fetch('REDIS_URL', 'redis://localhost:6379/'))
+      @redis ||= Redis.new({
+        host: uri.host,
+        port: uri.port,
+        password: uri.password,
+        timeout: 1
+      })
     end
   end
 end
