@@ -59,7 +59,7 @@ module FullRequestLogger::DataAdapters
     private
 
     def redis
-      @redis ||= Redis.new FullRequestLogger.redis
+      @redis ||= Redis.new(ENV.fetch('REDIS_URL', 'redis://localhost:6379/'))
     end
   end
 end

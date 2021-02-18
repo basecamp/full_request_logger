@@ -26,7 +26,6 @@ module FullRequestLogger
       config.after_initialize do |app|
         FullRequestLogger.enabled       = app.config.full_request_logger.enabled || false
         FullRequestLogger.ttl           = app.config.full_request_logger.ttl   || 10.minutes
-        FullRequestLogger.redis         = app.config.full_request_logger.redis || {}
         FullRequestLogger.eligibility   = app.config.full_request_logger.eligibility || true
         FullRequestLogger.data_adapter  = {
           redis: FullRequestLogger::DataAdapters::RedisAdapter,

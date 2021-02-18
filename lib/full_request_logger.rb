@@ -7,7 +7,6 @@ module FullRequestLogger
   autoload :Processor
 
   mattr_accessor :ttl
-  mattr_accessor :redis
   mattr_accessor :enabled
   mattr_accessor :eligibility
   mattr_accessor :credentials
