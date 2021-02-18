@@ -1,7 +1,9 @@
 # frozen_string_literal: true
-require "zlib"
-
 class FullRequestLogger::Recorder
+  def self.reset_instance_cache!
+    @instance = nil
+  end
+
   def self.instance
     @instance ||= new
   end
@@ -24,7 +26,7 @@ class FullRequestLogger::Recorder
   # Store all log messages as a single string to the full request logging storage accessible under the +request_id+.
   def store(request_id)
     if (log_to_be_stored = combined_log).present?
-      data_adapter.write(key: request_id, ttl: FullRequestLogger.ttl, text: compress(log_to_be_stored))
+      data_adapter.write(request_id: request_id, body: log_to_be_stored)
     end
   ensure
     clear
@@ -33,9 +35,7 @@ class FullRequestLogger::Recorder
   # Returns a single string with all the log messages that were captured for the given +request_id+ (or nil if nothing was
   # recorded or it has since expired).
   def retrieve(request_id)
-    if log = data_adapter.find(request_id)
-      uncompress(log).force_encoding("utf-8")
-    end
+    data_adapter.find(request_id)
   end
 
   # Returns the list of logs with request_id to show at index, supports for basic next page and search
@@ -75,13 +75,5 @@ class FullRequestLogger::Recorder
 
   def clear_stored_requests
     data_adapter.clear
-  end
-
-  def compress(text)
-    Zlib::Deflate.deflate(text)
-  end
-
-  def uncompress(text)
-    Zlib::Inflate.inflate(text)
   end
 end

@@ -14,24 +14,25 @@ class FullRequestLogger::Processor
   end
 
   private
-    attr_reader :request
-    delegate :request_id, to: :request
 
-    def enabled?
-      FullRequestLogger.enabled
+  attr_reader :request
+  delegate :request_id, to: :request
+
+  def enabled?
+    FullRequestLogger.enabled
+  end
+
+  def eligible_for_storage?
+    if eligibility.respond_to?(:call)
+      eligibility.call(request)
+    else
+      eligibility
     end
+  end
 
-    def eligible_for_storage?
-      if eligibility.respond_to?(:call)
-        eligibility.call(request)
-      else
-        eligibility
-      end
-    end
+  delegate :eligibility, to: FullRequestLogger
 
-    delegate :eligibility, to: FullRequestLogger
-
-    def recorder
-      @recorder ||= FullRequestLogger::Recorder.instance
-    end
+  def recorder
+    @recorder ||= FullRequestLogger::Recorder.instance
+  end
 end

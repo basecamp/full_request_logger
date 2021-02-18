@@ -2,6 +2,7 @@ require "rails/engine"
 require "full_request_logger/middleware"
 require "full_request_logger/data_adapters/base_adapter"
 require "full_request_logger/data_adapters/redis_adapter"
+require "full_request_logger/data_adapters/elasticsearch_adapter"
 require "full_request_logger/job"
 
 module FullRequestLogger
@@ -28,7 +29,8 @@ module FullRequestLogger
         FullRequestLogger.redis         = app.config.full_request_logger.redis || {}
         FullRequestLogger.eligibility   = app.config.full_request_logger.eligibility || true
         FullRequestLogger.data_adapter  = {
-          redis: FullRequestLogger::DataAdapters::RedisAdapter
+          redis: FullRequestLogger::DataAdapters::RedisAdapter,
+          elasticsearch: FullRequestLogger::DataAdapters::ElastisearchAdapter
         }.fetch(app.config.full_request_logger.data_adapter, FullRequestLogger::DataAdapters::RedisAdapter)
 
         FullRequestLogger.credentials   = app.config.full_request_logger.credentials || app.credentials.full_request_logger

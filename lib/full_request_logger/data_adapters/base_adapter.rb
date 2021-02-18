@@ -1,3 +1,5 @@
+require "zlib"
+
 module FullRequestLogger::DataAdapters
   class BaseAdapter
     def self.object
@@ -24,6 +26,20 @@ module FullRequestLogger::DataAdapters
 
     def request_key(id)
       "full_request_logger/requests/#{id}"
+    end
+
+    def compress(text)
+      Zlib::Deflate.deflate(text)
+    end
+
+    def uncompress(text)
+      Zlib::Inflate.inflate(text)
+    end
+
+    class FullRequestLog < OpenStruct
+      def to_hash
+        to_h
+      end
     end
   end
 end

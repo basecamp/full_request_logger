@@ -3,11 +3,16 @@ require "redis"
 module FullRequestLogger::DataAdapters
   class RedisAdapter < BaseAdapter
     def write(**args)
-      redis.setex(request_key(args[:key]), args[:ttl], args[:text])
+      redis.setex(request_key(args[:request_id]), FullRequestLogger.ttl, compress(args[:body]))
     end
 
     def find(id)
-      redis.get(request_key(id))
+      if log = redis.get(request_key(id))
+        FullRequestLog.new(
+          request_id: id,
+          body: uncompress(log).force_encoding("utf-8")
+        )
+      end
     end
 
     def all(page: 1, per_page: 50, query: nil)
@@ -26,7 +31,7 @@ module FullRequestLogger::DataAdapters
           body = find(key)
 
           if query.blank? || (query.present? && body.include?(query))
-            http_truncated_log_list << OpenStruct.new(
+            http_truncated_log_list << FullRequestLog.new(
               request_id: key,
               body: body.to_s.truncate(100)
             )

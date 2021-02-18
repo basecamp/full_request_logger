@@ -3,8 +3,10 @@ require "rails/test_help"
 
 require "full_request_logger"
 
-class RecorderTest < ActiveSupport::TestCase
+class RecorderRedisTest < ActiveSupport::TestCase
   setup do
+    FullRequestLogger::Recorder.reset_instance_cache!
+    FullRequestLogger.data_adapter = FullRequestLogger::DataAdapters::RedisAdapter
     @logger = Logger.new(StringIO.new)
     @full_request_logger = FullRequestLogger::Recorder.new.tap { |frl| frl.attach_to(@logger) }
   end
@@ -23,10 +25,20 @@ class RecorderTest < ActiveSupport::TestCase
 
     @full_request_logger.store("123")
 
-    assert_equal "This is an extra line\nThis is another line\nThis is yet another line", @full_request_logger.retrieve("123")
+    assert_equal "This is an extra line\nThis is another line\nThis is yet another line", @full_request_logger.retrieve("123").body
   end
 
   test "retrieve missing request" do
     assert_nil @full_request_logger.retrieve("not-there")
+  end
+
+  test "store multiple request and get all" do
+    @logger.info "This first log"
+    @full_request_logger.store("first")
+
+    @logger.info "This second log"
+    @full_request_logger.store("second")
+
+    assert_equal @full_request_logger.retrive_list.size, 2
   end
 end
