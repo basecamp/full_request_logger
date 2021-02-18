@@ -11,4 +11,5 @@ module FullRequestLogger
   mattr_accessor :enabled
   mattr_accessor :eligibility
   mattr_accessor :credentials
+  mattr_accessor :data_adapter
 end
