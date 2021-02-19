@@ -18,7 +18,7 @@
   </div>
 </div>
 
-<% if @logs.entries.any? %>
+<% if @logs.present? %>
   <table>
     <thead>
       <tr>
@@ -28,7 +28,7 @@
       </tr>
     </thead>
     <tbody>
-      <% @logs.entries.each do |log| %>
+      <% @logs.each do |log| %>
         <tr>
           <td><%= log.request_id %></td>
           <td>
