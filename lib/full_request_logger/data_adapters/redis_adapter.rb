@@ -33,7 +33,7 @@ module FullRequestLogger::DataAdapters
           if query.blank? || (query.present? && body.include?(query))
             http_truncated_log_list << FullRequestLog.new(
               request_id: key,
-              body: body.to_s.truncate(100)
+              body: body
             )
           end
         end

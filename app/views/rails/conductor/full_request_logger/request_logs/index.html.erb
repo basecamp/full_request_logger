@@ -19,7 +19,12 @@
 </div>
 
 <% if @logs.present? %>
-  <table>
+  <table style="width: 100%">
+    <colgroup>
+      <col span="1" style="width: 15%;">
+       <col span="1" style="width: 70%;">
+       <col span="1" style="width: 15%;">
+    </colgroup>
     <thead>
       <tr>
         <td>Request Id</td>
@@ -30,11 +35,11 @@
     <tbody>
       <% @logs.each do |log| %>
         <tr>
-          <td><%= log.request_id %></td>
-          <td>
-            <pre style="background: black; color: white; padding: 10px; overscroll: auto;"><%= log.body %></pre>
+          <td style="width: 20%;"><%= log.request_id %></td>
+          <td style="width: 70%;">
+            <pre><%= log.body %></pre>
           </td>
-          <td>
+          <td style="width: 10%;">
             <%= link_to "View Detail", rails_conductor_request_log_path(log.request_id) %> &nbsp;
             <%= link_to "Download", rails_conductor_request_log_path(log.request_id, format: :text) %>
           </td>
@@ -53,7 +58,6 @@
 <style>
   .pagination {
      text-align: center;
-     margin: 0;
      padding: 0;
      margin: 0 0 10px;
   }
@@ -66,5 +70,16 @@
   .pagination li.active {
      background: #003580;
      color: white;
+  }
+
+  pre {
+    display: flex;
+    white-space: normal;
+    word-break: break-word;
+    height: 100px;
+    overflow: scroll;
+    background: black;
+    color: white;
+    padding: 5px;
   }
 </style>

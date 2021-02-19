@@ -13,10 +13,10 @@ module Rails
     end
 
     def show
-      if @logs = FullRequestLogger::Recorder.instance.retrieve(params[:id])
+      if @log = FullRequestLogger::Recorder.instance.retrieve(params[:id])
         respond_to do |format|
           format.html
-          format.text { send_data @logs, disposition: :attachment, filename: "#{params[:id]}.log" }
+          format.text { send_data @log.body, disposition: :attachment, filename: "#{params[:id]}.log" }
         end
       else
         redirect_to rails_conductor_request_logs_url, alert: "Request not found!"
