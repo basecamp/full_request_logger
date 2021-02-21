@@ -15,13 +15,15 @@ module FullRequestLogger::DataAdapters
     end
 
     def all(page: 1, per_page: 50, query: nil)
+      from = (page - 1) * per_page
+
       results = if query.present?
-        repository.search(query: { match: { body: query } }).results
+        repository.search(query: { match: { body: query } }, from: from, size: per_page).results
       else
-        repository.search({ query: { match_all: {} } }).results
+        repository.search({ query: { match_all: {} } }, from: from, size: per_page).results
       end
 
-      WillPaginate::Collection.create(page, per_page, results.count) do |pager|
+      WillPaginate::Collection.create(page, per_page, repository.count) do |pager|
         pager.replace results[pager.offset, pager.per_page].to_a
       end
     rescue Elasticsearch::Transport::Transport::Errors::NotFound
