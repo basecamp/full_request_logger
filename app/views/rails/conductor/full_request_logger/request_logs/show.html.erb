@@ -1,8 +1,0 @@
-<h1>Request: <%= params[:id] %></h1>
-
-<p>
-  <%= link_to "Download this request log", rails_conductor_request_log_path(params[:id], format: :text) %> |
-  <%= link_to "Lookup another request", rails_conductor_request_logs_path %>
-</p>
-
-<pre style="background: black; color: white; padding: 10px; overscroll: auto;"><%= @logs %></pre>

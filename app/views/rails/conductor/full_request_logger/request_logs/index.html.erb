@@ -1,9 +1,0 @@
-<h1>Lookup a request log</h1>
-
-<% if alert = flash[:alert] %><p style="color: red"><%= alert %></p><% end %>
-
-<%= form_with url: rails_conductor_request_logs_path do |form| %>
-  <p>Copy the X-Request-Id header and paste it in:</p>
-  <%= form.text_field :id, size: 40, placeholder: "0540689b-1ec6-4b92-ae8e-1c55bf7c3b79", autofocus: true %>
-  <%= form.submit "Retrieve" %>
-<% end %>
