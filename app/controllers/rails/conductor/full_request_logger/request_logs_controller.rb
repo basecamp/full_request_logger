@@ -26,7 +26,7 @@ module Rails
     private
       def authenticate
         if credentials = FullRequestLogger.credentials
-          http_basic_authenticate_or_request_with credentials
+          http_basic_authenticate_or_request_with **credentials
         end
       end
   end
